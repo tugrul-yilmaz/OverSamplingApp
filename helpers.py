@@ -13,7 +13,7 @@ from sklearn.neighbors import LocalOutlierFactor
 from sklearn.preprocessing import MinMaxScaler,LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score,roc_auc_score, confusion_matrix, classification_report, plot_roc_curve
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score,roc_auc_score, confusion_matrix, classification_report
 from imblearn.over_sampling import RandomOverSampler,SMOTE,BorderlineSMOTE,SVMSMOTE,ADASYN
 from sklearn.decomposition import PCA
 from numpy import where
@@ -181,7 +181,7 @@ def normal(x, y):
 def random_oversampling(x, y):
     x_train,x_test,y_train,y_test = train_test_split(x, y, test_size=0.2, random_state=42)
     log_model = LogisticRegression()
-    oversample=RandomOverSampler(sampling_strategy="minority")
+    oversample=RandomOverSampler(sampling_strategy="not majority")
     x_randomover,y_randomover = oversample.fit_resample(x_train,y_train)
     y_randomover.value_counts()
     log_model.fit(x_randomover,y_randomover)
@@ -215,12 +215,12 @@ def border(x, y):
     st.pyplot(fig)
     
 def svm(x, y):
-    x_train,x_test,y_train,y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
     log_model = LogisticRegression()
-    oversample=SVMSMOTE()
-    x_svm,y_svm = oversample.fit_resample(x_train,y_train)
+    oversample = SVMSMOTE()
+    x_svm, y_svm = oversample.fit_resample(x_train.values, y_train)
     y_svm.value_counts()
-    log_model.fit(x_svm,y_svm)
+    log_model.fit(x_svm, y_svm)
     scores = scoring(log_model,x_svm,y_svm,x_test,y_test)
     fig, ax = pca_plot(x_svm,y_svm)
     st.subheader(f"SVM Recall Score: {scores['RECALL SCORE']}")
